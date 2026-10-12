@@ -1,8 +1,8 @@
 // 引擎：时间 t（秒）→ 一帧画面。确定性：同一个 t 永远画出同一帧（随机数全部用种子）。
 // 时间轴由节拍网格驱动：128 BPM，每段占若干八分音符（见 eras.js 的 eighths）。
 (() => {
-const W = 1920, H = 1080;
-const cv = document.getElementById('c');
+const W = window.STAGE.W, H = window.STAGE.H;          // 默认 1920×1080；竖版片在段落表里 U.setStage(1080, 1920)
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
 const ctx = cv.getContext('2d');
 window.__canvas = cv;
 

@@ -23,6 +23,7 @@ ap.add_argument('--stills', help='逗号分隔秒数：只导出这些时刻的 
 ap.add_argument('--solo', help='只渲某个时代（时间为本段局部时间），配合 --stills 或 --from/--to')
 ap.add_argument('--film', default='', help='片子名：读 eras_<名>.js（默认 eras.js）')
 ap.add_argument('--no-counter', action='store_true', help='--solo 时不画角标')
+ap.add_argument('--size', default='1920x1080', help='预览窗口画幅（画布尺寸由段落表 U.setStage 决定，这里只让无头窗口同形）')
 ap.add_argument('--crf', type=int, default=14)
 ap.add_argument('--spec', help='参数化片段 spec.json（走 clip.html，不读段落表）')
 ap.add_argument('--alpha', action='store_true', help='--spec 时出 ProRes 4444 带透明（背景不画）')
@@ -49,13 +50,15 @@ class Q(http.server.SimpleHTTPRequestHandler):
             f = urllib.parse.unquote(path[len('/__file__/'):].split('?')[0])
             return f if spec and f in ALLOWED else '/nonexistent'
         return super().translate_path(path)
-srv = socketserver.TCPServer(('127.0.0.1', 0), functools.partial(Q, directory=str(root)))
+class Srv(socketserver.ThreadingTCPServer):            # 单线程＋backlog 5 时 Chromium 并发取库文件会被 reset（偶发「RIG is not defined」，2026-10-07 诺奖科普实测）
+    daemon_threads = True; request_queue_size = 128
+srv = Srv(('127.0.0.1', 0), functools.partial(Q, directory=str(root)))
 port = srv.server_address[1]
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 
 with sync_playwright() as p:
     b = p.chromium.launch(args=['--disable-web-security', '--enable-gpu-rasterization', '--ignore-gpu-blocklist'])
-    pg = b.new_page(viewport={'width': 1920, 'height': 1080}, device_scale_factor=1)
+    pg = b.new_page(viewport=dict(zip(('width', 'height'), map(int, a.size.split('x')))), device_scale_factor=1)
     errors = []
     def on_console(m):
         if m.type in ('error', 'warning'): print('[page]', m.text)

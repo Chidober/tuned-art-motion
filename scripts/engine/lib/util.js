@@ -25,6 +25,11 @@ window.U = {
   // 点列 → Path2D（折线）
   poly(pts, closed = true) { const p = new Path2D(); pts.forEach((q, i) => i ? p.lineTo(q[0], q[1]) : p.moveTo(q[0], q[1])); if (closed) p.closePath(); return p; },
 };
+// 画布尺寸：默认 1920×1080。竖版整片在段落表开头 U.setStage(1080, 1920)（引擎、转场在段落表之后加载，直接读 window.STAGE；
+// 之前加载的库用 U.onStage 登记回调）。clip.html 的参数化片段也走这里。
+{ const hooks = []; window.STAGE = { W: 1920, H: 1080 };
+  U.onStage = f => { hooks.push(f); };
+  U.setStage = (w, h) => { window.STAGE = { W: w, H: h }; hooks.forEach(f => f(w, h)); }; }
 
 // ---------- 字形检查 ----------
 // 字体文件缺某个字时浏览器会静默回退到系统字体：measureText 不报错、宽度也对，换台机器就变样（迁移测试 B、D：全角字母、▶、「戏」「蓝」都踩过）。

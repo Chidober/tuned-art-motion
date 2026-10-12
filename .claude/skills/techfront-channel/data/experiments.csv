@@ -1,0 +1,8 @@
+id,hypothesis,variable,arms,primary_metric,windows,status,source,notes
+EXP-001,TikTok 60-90s vertical cut has higher completion than a 2-3 min cut and no lower 72h views,duration,short|long,completion_pct,24h;72h,proposed,playbook-v1 §6,
+EXP-002,Counterintuitive-claim hooks (H1/H2) have higher 3s retention than question hooks (H5),hook type,H1H2|H5,retention_3s_pct,24h,proposed,playbook-v1 §6,
+EXP-003,Shorts titles with searchable keywords get more 7d views and search share than curiosity titles,title style,keyword|curiosity,views;search_traffic_pct,7d,proposed,playbook-v1 §6,Needs user approval: current rule = brief title only (review v2 item 5)
+EXP-004,Long-video thumbnails with one visual contrast + <=4 words win YouTube A/B watch-time share,thumbnail,contrast4w|subject_text,watch_time_share,7d,proposed,playbook-v1 §6,Use YouTube Studio native A/B test
+EXP-005,TikTok posting at 21:00 ET beats 09:00 ET on 24h views (relative to channel median),posting time,2100ET|0900ET,views,24h,proposed,playbook-v1 §6,Posting-time advice not adopted by user yet
+EXP-006,Same-topic short + long pair: short drives traffic to the long video,pairing,A_short+B_long,views;follows,72h;7d,in_progress,TF-G-001 §4,Baseline = TF-20261010-01 (A-v3 + B-v1)
+EXP-007,Higher visual density (footage/photo share) improves avg watch % vs text-card-heavy cuts,visual density,low|high,avg_watch_pct,72h;7d,proposed,TF-G-001 §4,Same as spec v1 'insert footage'; user feedback 'all text is monotonous'

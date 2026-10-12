@@ -23,3 +23,15 @@ __pycache__/
 node_modules/
 _archive/
 _private/
+
+# 本地曼波 TTS（local_tts/）：引擎源码、模型权重、Python 环境都很大，用 local_tts/setup.sh 重建
+local_tts/vendor/
+local_tts/models/
+local_tts/nltk_data/
+local_tts/.venv/
+local_tts/.uv-python/
+local_tts/.uv-cache/
+**/tts_cache_mambo/
+
+# 视频工程产物（成片、素材、配音、凭据 projects/.env）：体积大、含授权素材，只留本地
+projects/

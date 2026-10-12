@@ -38,6 +38,7 @@ from playwright.sync_api import sync_playwright
 ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
 ap.add_argument('--project'); ap.add_argument('--spec', help='参数化片段 spec（走 clip.html，和 render.py --spec 同一套）'); ap.add_argument('--ids'); ap.add_argument('--fps', type=float, default=30)
 ap.add_argument('--out'); ap.add_argument('--film', default='', help='片子名：读 eras_<名>.js'); ap.add_argument('--skip', type=float, default=0.35, help='每段开头跳过的秒数（镜头冲击）')
+ap.add_argument('--size', default='1920x1080', help='整片画幅 宽x高（竖版片 1080x1920，段落表里 U.setStage 要一致）')
 ap.add_argument('--sub-band', type=float, default=None, help='字幕带上沿（占画高比例）；整片默认 0.852（920/1080），--spec 默认读 safe.bottom；写 0 关掉「进字幕带」检查')
 a = ap.parse_args()
 if not (a.project or a.spec): ap.error('--project 或 --spec 二选一')
@@ -54,7 +55,7 @@ if a.spec:                                                 # 和 render.py 同�
     if (spec.get('data') or {}).get('image'): spec['data']['image'] = ref(spec['data']['image'])
 root = Path(a.project).resolve() if a.project else Path(__file__).resolve().parent / 'engine'
 out = Path(a.out) if a.out else (Path(a.spec).resolve().parent / 'qa' if a.spec else root.parent / 'qa'); out.mkdir(parents=True, exist_ok=True)
-VW, VH = (spec.get('width', 1920), spec.get('height', 1080)) if spec else (1920, 1080)
+VW, VH = (spec.get('width', 1920), spec.get('height', 1080)) if spec else tuple(int(v) for v in a.size.split('x'))
 if a.sub_band is None:   # 片段给管线用：字幕让位写在 spec 的 safe.bottom 里，没写就当没有烧录字幕
     sb = ((spec or {}).get('safe') or {}).get('bottom', 0) if spec else None
     a.sub_band = 0.852 if sb is None else (1 - sb / VH if sb else 0)
@@ -66,7 +67,9 @@ class Q(http.server.SimpleHTTPRequestHandler):
             f = urllib.parse.unquote(path[len('/__file__/'):].split('?')[0])
             return f if f in ALLOWED else '/nonexistent'
         return super().translate_path(path)
-srv = socketserver.TCPServer(('127.0.0.1', 0), functools.partial(Q, directory=str(root))); port = srv.server_address[1]
+class Srv(socketserver.ThreadingTCPServer):            # 同 render.py：单线程＋backlog 5 会偶发 ERR_CONNECTION_RESET，库没加载上
+    daemon_threads = True; request_queue_size = 128
+srv = Srv(('127.0.0.1', 0), functools.partial(Q, directory=str(root))); port = srv.server_address[1]
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 
 # 框景检查：包一层 fillText/strokeText，记下画在「整屏大小的画布」上的字的屏幕外框（经过当前变换）

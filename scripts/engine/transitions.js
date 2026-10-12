@@ -2,7 +2,7 @@
 // o: {W,H,lt,t,tmp,IMG, ...该转场在 eras.js 里的参数}。确定性：随机数一律 U.rng(种子)。
 // 每个转场都取「新时代」最有辨识度的形式元素（见 经验日志「转场」）。
 (() => {
-const W = 1920, H = 1080;
+const W = window.STAGE.W, H = window.STAGE.H;   // 跟段落表的 U.setStage 走
 const { clamp, lerp, ease, rng } = U, TAU = Math.PI * 2;
 const seg = (p, a, b) => clamp((p - a) / (b - a));          // 把 p 的 [a,b] 段拉成 0..1
 

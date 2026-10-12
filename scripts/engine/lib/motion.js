@@ -7,12 +7,9 @@ const { clamp, lerp } = U;
 const MO = window.MO = {};
 
 // ---------- 画布尺寸（片段渲染用） ----------
-// 引擎和全部示范片是 1920×1080。clip.html（口播管线的参数化片段）可能是竖屏 1080×1920：
-// 用到屏幕尺寸的库（CAM / UI / CH / DG / CL）用 U.onStage 登记，clip.js 启动时 U.setStage(w, h) 一次性改掉。
-const stageHooks = [];
-window.STAGE = { W: 1920, H: 1080 };
-U.onStage = f => { stageHooks.push(f); };
-U.setStage = (w, h) => { window.STAGE = { W: w, H: h }; stageHooks.forEach(f => f(w, h)); };
+// 引擎和全部示范片是 1920×1080。clip.html（口播管线的参数化片段）、竖版整片可能是 1080×1920：
+// 用到屏幕尺寸的库（PAINT / CAM / UI / CH / DG / CL）用 U.onStage 登记；clip.js 启动时、竖版片的段落表开头 U.setStage(w, h) 一次性改掉。
+// （U.onStage / U.setStage / window.STAGE 定义在 util.js，最先加载，paint.js 也能登记。）
 
 // ---------- 时间片 ----------
 MO.seg = (t, a, b) => clamp((t - a) / (b - a));                          // [a,b] → 0..1
