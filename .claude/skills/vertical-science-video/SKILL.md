@@ -1,6 +1,6 @@
 ---
 name: vertical-science-video
-description: 竖版（1080×1920）科普短视频整片制作：选题调研与事实核对 → 按选题选解说语法和艺术风格、先出一张标题图给用户确认（同意后才做片）→ 口播稿 → 本地曼波配音（local_tts，GPT-SoVITS）或 edge-tts → 第 0 帧大标题＋0.6 秒开口的片头钩子 → 按内容选风格（动态文字＋数据图、Vox 拼贴、Kurzgesagt 扁平）→ 代码动画逐镜头卡在口播词上 → 烧录字幕、原创配乐音效 → 并行渲染 → qa → 独立审片 → TechFront 水印与 720p 预览交付。只要用户要做科普/解说/知识类视频，提到竖版、抖音、短视频、诺奖、经济学、「XX 是不是 XX」这类选题，要曼波配音、加水印、加开头标题，或者说「再做一支」「按之前的流程做」，都用这个 skill——即使没说「竖版」，在这个仓库里做 3–5 分钟口播科普片也用它。
+description: 竖版（1080×1920）科普短视频整片制作：选题调研与事实核对 → 按选题选解说语法和艺术风格、先出一张标题图给用户确认（同意后才做片）→ 口播稿 → 本地曼波配音（local_tts，GPT-SoVITS）或 edge-tts → 第 0 帧大标题＋0.6 秒开口的片头钩子 → 按内容选风格（动态文字＋数据图、Vox 拼贴、Kurzgesagt 扁平）→ 代码动画逐镜头卡在口播词上 → 烧录字幕、原创配乐音效 → 并行渲染 → qa → 独立审片 → TechFront 水印版交付。只要用户要做科普/解说/知识类视频，提到竖版、抖音、短视频、诺奖、经济学、「XX 是不是 XX」这类选题，要曼波配音、加水印、加开头标题，或者说「再做一支」「按之前的流程做」，都用这个 skill——即使没说「竖版」，在这个仓库里做 3–5 分钟口播科普片也用它。
 ---
 
 # 竖版科普视频创作者
@@ -99,7 +99,7 @@ cd projects/<slug>/音频 && python subs.py <film> && python score.py
 ```bash
 python .claude/skills/vertical-science-video/scripts/overview.py projects/<slug> <film> --stills 0,3,12,25,...   # 改代码后先看关键帧
 bash .claude/skills/vertical-science-video/scripts/render_parallel.sh projects/<slug> <film>                       # 整片（约 2× 实时）
-bash .claude/skills/vertical-science-video/scripts/finish.sh projects/<slug> "<成片名>"                             # 成片、TechFront 水印版、720p 预览、响度
+bash .claude/skills/vertical-science-video/scripts/finish.sh projects/<slug> "<成片名>"                             # 成片、TechFront 水印版、响度（720p 预览默认不出，要时加 PREVIEW=1）
 python .claude/skills/vertical-science-video/scripts/overview.py projects/<slug> <film> projects/<slug>/成片/<成片名>_TechFront.mp4
 ```
 - 渲染、qa、审片都很慢：用后台任务（run_in_background），等通知，不要轮询。zsh 不按空格拆参数，循环交给脚本里的 bash。
@@ -117,7 +117,7 @@ python scripts/qa.py --project projects/<slug>/代码工程 --film <film> --size
 
 ## 10. 交付
 
-- 成片三件在 `成片/`：无水印版、`_TechFront` 水印版、`_预览720p`（<30 MB，用 SendUserFile 发；1080p 超过 30 MB 只能在桌面打开，要说明）。另发 `镜头总览.jpg`。
+- 成片两件在 `成片/`：无水印版、`_TechFront` 水印版。用户说过不需要默认出 720p 预览，所以 `finish.sh` 默认不出（要时 `PREVIEW=1`）。交付时用 SendUserFile 发 `_TechFront` 版和 `镜头总览.jpg`。
 - README：时长、风格、论证线表、**数据出处逐条（带口径）**、示意说明、重做命令、审片与修订记录、声音权利提醒。
 - 经验回流：新踩的坑写进 `references/03-踩坑清单.md`（和仓库 `CHANGELOG.md` 一行）。不提交，除非用户要求。
 - 要横版（或竖横两版）：同一条口播、同一套镜头，用 pop kit 的槽位摆版 `P.in(slot)`，见 `references/02` 的「竖版＋横版一起出」；`render_parallel.sh` 用 `SIZE`/`OUT` 环境变量出横版。
