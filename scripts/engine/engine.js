@@ -29,12 +29,14 @@ async function boot() {
   const list = new Set();
   for (const e of ERAS) (e.assets || []).concat(e.plate ? [e.plate] : []).forEach(s => list.add(s));
   (window.EXTRA_ASSETS || []).forEach(s => list.add(s));
-  await Promise.all([...list].map(async s => { IMG[s] = await load(s); }));
+  try { await Promise.all([...list].map(async s => { IMG[s] = await load(s); })); }
+  catch (src) { window.__bootFailed = `图片加载失败：${src}（段的 assets / plate / window.EXTRA_ASSETS 里点名的文件不存在或不是图片）`; console.error('BOOT FAILED\n' + window.__bootFailed); return; }
   for (const f of (window.FONT_FACES || [])) { const ff = new FontFace(f.family, `url(${f.url})`, f.desc || {}); await ff.load(); document.fonts.add(ff); }
   await document.fonts.ready;
   await U.loadCmaps();                                  // 字形检查用（U.assertGlyphs）
   for (const e of ERAS) if (e.init) e.init(IMG);
   checkCounterGlyphs();
+  await window.prepare(0);                              // 第 0 帧的视频帧先加载（缺帧在这里就报错）
   window.__ready = true;
   renderFrame(0);
 }
@@ -193,7 +195,9 @@ function clipFrameUrl(e, lt) {
 }
 async function need(url) {
   if (FRAMES.has(url)) return;
-  const im = new Image(); im.src = url; await im.decode(); FRAMES.set(url, im);
+  const im = new Image(); im.src = url;
+  try { await im.decode(); } catch (e) { const msg = `视频帧缺失或解不开：${url}（clip.dir / n / in 对不上帧序列）`; console.error(msg); throw new Error(msg); }
+  FRAMES.set(url, im);
   if (FRAMES.size > 240) { const k = FRAMES.keys().next().value; FRAMES.delete(k); }
 }
 function layersAt(t) {
@@ -219,7 +223,10 @@ function drawEra(c, e, t, prev, punchFrom, noCounter) {
   const k60 = amp ? (t - pe.t0) * 60 : 99;
   const punch = k60 >= 0 && k60 < 20 ? 1 + amp * Math.pow(1 - k60 / 20, 1.5) : 1;
   c.save(); if (punch !== 1) { c.translate(W / 2, H / 2); c.scale(punch, punch); c.translate(-W / 2, -H / 2); }
-  if (e.clip) { const im = FRAMES.get(clipFrameUrl(e, lt)); if (im) c.drawImage(im, 0, 0, W, H); else if (e.plate) c.drawImage(IMG[e.plate], 0, 0, W, H); }
+  // 视频帧：等比铺满（MD.cover，不拉伸）；段里写 clipDraw(c, frame, lt, t) 自己摆（推近、焦点、冲印件）。帧没准备好不许静默空白——直接报错
+  if (e.clip) { const url = clipFrameUrl(e, lt), im = FRAMES.get(url);
+    if (!im) throw new Error(`视频帧没加载：${url}（渲染前要先 await window.prepare(t)；render.py 已经这么做，自己写的脚本也要）`);
+    if (e.clipDraw) e.clipDraw(c, im, lt, t); else MD.cover(c, im); }
   else if (e.plate && !e.draw) c.drawImage(IMG[e.plate], 0, 0, W, H);
   if (e.draw) e.draw(c, lt, t, IMG, prev);
   c.restore();
@@ -261,5 +268,5 @@ let playing = false, t0 = 0, base = 0;
 scrub.oninput = () => { playing = false; renderFrame(+scrub.value); tt.textContent = (+scrub.value).toFixed(3); };
 document.getElementById('play').onclick = () => { playing = !playing; t0 = performance.now(); base = +scrub.value; if (playing) loop(); };
 function loop() { if (!playing) return; let t = base + (performance.now() - t0) / 1000; if (t > window.__total) { t = 0; base = 0; t0 = performance.now(); } scrub.value = t; tt.textContent = t.toFixed(3); renderFrame(t); requestAnimationFrame(loop); }
-boot().catch(err => { console.error('boot failed', err); });
+boot().catch(err => { window.__bootFailed = String(err && err.stack || err); console.error('BOOT FAILED\n' + window.__bootFailed); });
 })();
