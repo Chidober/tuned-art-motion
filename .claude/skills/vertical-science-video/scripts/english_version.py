@@ -133,7 +133,7 @@ def build(proj, film):
         s = s.replace(f"'代码工程' / '{film}'", f"'代码工程' / '{fe}'").replace(f'代码工程/{film}/', f'代码工程/{fe}/')
         s = s.replace("s += x[1]", "s += re.sub('[^a-z0-9]', '', x[1].lower())").replace("s.find(sub, idx + 1)", "s.find(re.sub('[^a-z0-9]', '', sub.lower()), idx + 1)")
         s = s.replace("'混音.wav'", "'混音_en.wav'")
-        if not re.search(r'^import .*\bre\b', s, re.M): s = _add_re(s)
+        if not re.search(r'^import (?:[\w.]+\s*,\s*)*re\s*(?:,|$)', s, re.M): s = _add_re(s)   # 「import re as _re」不算：w() 里用的是 re
         (ae / 'score.py').write_text(s, encoding='utf-8')
     shutil.copy(Path(__file__).with_name('subs_en.py'), ae / 'subs.py')
     print(f'已生成：代码工程/{fe}/、eras_{fe}.js、音频_en/（口播稿.json、tts.py、subs.py、score.py）')

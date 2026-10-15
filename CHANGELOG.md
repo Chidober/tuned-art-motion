@@ -36,3 +36,4 @@
 - 2026-10-10：vertical-science-video 规则——按选题选解说语法和艺术风格（不再默认动态文字），调研后先出标题图给用户确认，同意后才配音做片；新增 references/06-选语法与风格.md、scripts/title_preview.py（占位时间轴＋只渲标题镜，竖横两版对照图）、projects/.science_log.tsv（风格轮换日志）；模板段落表默认只有 s01。
 - 2026-10-12：新片《薄肌理论有道理吗：AI 能替你思考，替不了你长肌肉》（4:06，竖版＋横版各一，扁平解释动画）；references/06 加「画面要演过程，不要只是文字卡」，03 加扁平解释动画的坑（动作参数 clamp、示意比例、剂量曲线外推、计数对口播、destination-out 黑洞、因果措辞、口径进口播）。
 - 2026-10-12：finish.sh 默认不再出 720p 预览（PREVIEW=1 才出）；vertical-science-video、tech-news-shorts、techfront-channel 的交付说明同步更新。
+- 2026-10-15：新片《2026 诺贝尔经济学奖：央行说一句话，为什么能管住物价？》（剪报拼贴＋真实照片，竖横两版＋英文 YouTube 横版，不烧字幕＋.en.srt）；english_version.py 修正 score 生成时 re 未导入的判断；03 加剪报拼贴和英文版的坑。
