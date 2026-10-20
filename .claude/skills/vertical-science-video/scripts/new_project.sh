@@ -10,7 +10,17 @@ SK="$ROOT/.claude/skills/vertical-science-video"
 P="$ROOT/projects/$SLUG"
 [ -e "$P" ] && { echo "已存在：$P"; exit 1; }
 [[ "$FILM" =~ ^[a-z0-9_]+$ ]] || { echo "film 只能是小写字母/数字/下划线（index.html 按 eras_<film>.js 找段落表）"; exit 1; }
-mkdir -p "$P"/{素材,音频,渲染,成片}
+# 素材、渲染、成片（大文件）放外置盘 /Volumes/Backup/Video/<slug>/，工程里留同名符号链接，脚本路径不变；盘不在就照旧放工程里。
+# 可用环境变量 VIDEO_STORE 换位置。用户 2026-10-20：「之后的素材和视频等中间文件统一改到/Volumes/Backup/Video位置，找不到这个文件夹那就按原位置存放」
+STORE="${VIDEO_STORE:-/Volumes/Backup/Video}"
+mkdir -p "$P/音频"
+if [ -d "$STORE" ] && [ -w "$STORE" ]; then
+  for d in 素材 渲染 成片; do mkdir -p "$STORE/$SLUG/$d"; ln -s "$STORE/$SLUG/$d" "$P/$d"; done
+  echo "素材/渲染/成片 → $STORE/$SLUG/"
+else
+  mkdir -p "$P"/{素材,渲染,成片}
+  echo "没找到 $STORE，素材/渲染/成片放在工程目录里"
+fi
 rsync -a --exclude demos --exclude examples --exclude reference_films "$ROOT/scripts/engine/" "$P/代码工程/"
 mkdir -p "$P/代码工程/$FILM"
 case "$STYLE" in

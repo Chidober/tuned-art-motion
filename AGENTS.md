@@ -12,3 +12,4 @@
 - 不动本机环境。Python 用仓库根的 `.venv`（含 uv、ffmpeg、Playwright Chromium）；曼波本地配音用 `local_tts/.venv`（没有就 `bash local_tts/setup.sh`，约 4.5 GB，先征得用户同意）。
 - 长任务（配音、渲染、qa）放后台跑并看日志；下载任何文件前先问用户；凭据只放 `projects/.env`，不在对话里要、不打印。
 - 产物在 `projects/<slug>/`（成片、预览、镜头总览、发布文案、README）。改动不要提交，除非用户要求。
+- 大文件放外置盘：`/Volumes/Backup/Video/<slug>/{素材,渲染,成片}`，工程里是同名符号链接（`new_project.sh` 自动建，盘不在就放工程里）。临时下载、抽帧、转写音频等中间文件也写到这些目录里，不要另放 `projects/` 下的普通目录。

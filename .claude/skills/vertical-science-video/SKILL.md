@@ -51,6 +51,7 @@ description: 竖版（1080×1920）科普短视频整片制作：选题调研与
 ```bash
 bash .claude/skills/vertical-science-video/scripts/new_project.sh <slug> <film> <pop|collage> "<片名>"
 ```
+`素材/`、`渲染/`、`成片/` 建在外置盘 `/Volumes/Backup/Video/<slug>/`，工程里放同名符号链接（用户要求大文件不占本机盘）；盘没挂上就照旧建在工程里。下载的素材、抽帧、转写用的音频等中间文件都放进这三个目录。
 `film` 是代码工程里的片名（小写，`index.html?film=<film>` 读 `eras_<film>.js`）。kit 参数只是起点：pop／collage 之外的语法和风格要自己写 kit（参考仓库 demos 和风格配方），先只写到标题镜，出标题图给用户确认（第 1.5 步）。
 
 ## 1–2. 调研与口播稿（详见 references/01）
