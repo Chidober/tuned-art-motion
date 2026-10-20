@@ -39,3 +39,4 @@
 - 2026-10-15：新片《2026 诺贝尔经济学奖：央行说一句话，为什么能管住物价？》（剪报拼贴＋真实照片，竖横两版＋英文 YouTube 横版，不烧字幕＋.en.srt）；english_version.py 修正 score 生成时 re 未导入的判断；03 加剪报拼贴和英文版的坑。
 - 2026-10-16：新片《特斯拉能飞？新 Roadster 发布会集锦》（1:17，竖横两版，官方直播实拍＋原创预告片配乐＋字幕解释，不配音）。
 - 2026-10-20：new_project.sh 把 素材/渲染/成片 建到外置盘 /Volumes/Backup/Video/<slug>/（工程里留符号链接，盘不在就照旧，VIDEO_STORE 可改位置）；AGENTS.md、vertical-science-video 说明同步。
+- 2026-10-20：新片《一周科技快报 10.13–10.20》（desk 新闻台快讯＋倒计时 Top5，Wikimedia Commons 真实图片带署名；中文竖版 1:11 曼波配音、英文竖版 1:27 只配音不带字幕）；03 加实拍素材和一周快报的坑（activate 才找得到 Playwright、ffmpeg https 用 -ca_file、英文版 \n 转义和撇号、不要字幕的英文版做法、烧录计时器和公布成绩不一致）。
