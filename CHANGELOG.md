@@ -40,3 +40,6 @@
 - 2026-10-16：新片《特斯拉能飞？新 Roadster 发布会集锦》（1:17，竖横两版，官方直播实拍＋原创预告片配乐＋字幕解释，不配音）。
 - 2026-10-20：new_project.sh 把 素材/渲染/成片 建到外置盘 /Volumes/Backup/Video/<slug>/（工程里留符号链接，盘不在就照旧，VIDEO_STORE 可改位置）；AGENTS.md、vertical-science-video 说明同步。
 - 2026-10-20：新片《一周科技快报 10.13–10.20》（desk 新闻台快讯＋倒计时 Top5，Wikimedia Commons 真实图片带署名；中文竖版 1:11 曼波配音、英文竖版 1:27 只配音不带字幕）；03 加实拍素材和一周快报的坑（activate 才找得到 Playwright、ffmpeg https 用 -ca_file、英文版 \n 转义和撇号、不要字幕的英文版做法、烧录计时器和公布成绩不一致）。
+- 2026-11-02：projects 整体迁到外置盘 /Volumes/Backup/Video/huashu-art-motion/projects，仓库里留符号链接；.gitignore 改成 `projects`（带斜杠匹配不到符号链接）；render_parallel.sh、finish.sh 改为从脚本位置找仓库；new_project.sh 不再单独拆 素材/渲染/成片，盘没挂上时报错退出。
+- 2026-11-02：仓库复制到 /Volumes/Backup/Video/huashu-art-motion/，.venv 在盘上重建，local_tts/.venv 改路径；桌面仓库的 projects、.venv、local_tts/.venv 都改成指向盘上的符号链接；.gitignore 里 .venv 去掉结尾斜杠。
+- 2026-11-02：仓库主目录改为外置盘 /Volumes/Backup/Video/huashu-art-motion/，桌面副本删除。

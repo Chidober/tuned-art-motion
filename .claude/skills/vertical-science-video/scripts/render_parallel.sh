@@ -6,7 +6,7 @@
 # 注意：zsh 不会按空格拆 "0 66" 这类参数——本脚本用 bash 跑，不要改成 zsh 循环。
 set -euo pipefail
 P="$(cd "$1" && pwd)"; FILM="$2"; N="${3:-4}"; ONLY="${5:-}"
-ROOT="$(git -C "$P" rev-parse --show-toplevel)"
+ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"   # 工程在外置盘（projects 是符号链接），不能从工程目录找仓库
 SIZE="${SIZE:-1080x1920}"; OUT="${OUT:-全片_无声.mp4}"; PRE="${OUT%.mp4}"; [ "$OUT" = 全片_无声.mp4 ] && PRE=part
 source "$ROOT/.venv/bin/activate"
 TOTAL=$(python3 -c "import json;print(json.load(open('$P/代码工程/$FILM/timing.json'))['total'])")

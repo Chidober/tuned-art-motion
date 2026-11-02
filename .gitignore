@@ -19,7 +19,7 @@ __pycache__/
 *.p12
 *.pfx
 *.log
-.venv/
+.venv
 node_modules/
 _archive/
 _private/
@@ -28,10 +28,10 @@ _private/
 local_tts/vendor/
 local_tts/models/
 local_tts/nltk_data/
-local_tts/.venv/
+local_tts/.venv
 local_tts/.uv-python/
 local_tts/.uv-cache/
 **/tts_cache_mambo/
 
 # 视频工程产物（成片、素材、配音、凭据 projects/.env）：体积大、含授权素材，只留本地
-projects/
+projects

@@ -7,7 +7,7 @@
 # 位置 y=96 与左上台头同一行；台头只占左半边（≤ x 800），不会撞。
 set -euo pipefail
 P="$(cd "$1" && pwd)"; NAME="$2"
-ROOT="$(git -C "$P" rev-parse --show-toplevel)"
+ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"   # 工程在外置盘（projects 是符号链接），不能从工程目录找仓库
 source "$ROOT/.venv/bin/activate"
 cd "$P"
 OUT="成片/$NAME.mp4"; WM="成片/${NAME}_TechFront.mp4"; PV="成片/${NAME}_预览720p.mp4"
